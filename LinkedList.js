@@ -57,31 +57,55 @@ class LinkedList {
     pop() {
         if (!this.isEmpty()) {
             let current = this.head;
-            while(current.next.next != null) {
-                current = current.next;
-            }
+	    if(this.size() > 1) {
+            	while(current.next.next != null) {
+                	current = current.next;
+		}
+	    }
             this.n--;
+	    let val;
+	    if(this.size() == 0) {
+		  this.head = null;
+		  val = current.value;
+            } else {
+		  val = current.next.value;
+	    }
             current.next = null;
+	    return val;
         } else
         return null;
     }
 
     insertAt(value, index) {
-        if(index > -1 && index <= this.size() - 1) {
-            const current = this.at(index);
-            const newNode = new LinkedListNode(value);
-            newNode.next = current.next;
-            current.next = newNode;
-            this.n++;
+	if(index == 0)
+	    this.prepend(value)
+	else if(index > -1 && index <= this.size()) {
+	    const prev = this.at(index - 1);
+	    const current = this.at(index);
+	    const newNode = new LinkedListNode(value);
+
+	    prev.next = newNode;
+	    newNode.next = current;
+	    this.n++;
         }
     }
     
     removeAt(index) {
-        if(index > -1 && index <= this.size() - 1) {
+	if(index == 0) {
+	    const current = this.head;
+	    this.head = current.next;
+	    current.next = null;
+            this.n--;
+	
+	    return current.value;
+	}
+	else if(index > -1 && index < this.size()) {
             const prev = this.at(index - 1);
             const current = this.at(index);
             prev.next = current.next;
             this.n--;
+
+	    return current.value;
         }
     }
 
@@ -105,17 +129,20 @@ class LinkedList {
     at(index) {
         if(index > -1 && index <= this.size() - 1) {
             let current = this.head;
-            for (let i = 0; i < index; i++) {
+            for (let i = 0; i < index && current != null; i++) {
                 current = current.next;
             }
             return current;
-        } else return null
+        } else if(index == 0)
+	    return this.head;
+	else
+	    return null
     }
 
     contains(val) {
         if (!this.isEmpty()) {
             let current = this.head;
-            while(current.next.next != null) {
+            while(current != null) {
                 if(current.value == val) {
                     return true;
                 }
@@ -152,3 +179,22 @@ class LinkedList {
         return str;
     }
 }
+
+const list = new LinkedList() ;
+
+list.append(1);
+list.append(2);
+list.append(3);
+
+list.insertAt(5, 0);
+console.log(list.toString());
+list.insertAt(4, 1);
+console.log(list.toString());
+
+console.log(list.at(0).value);
+console.log(list.at(1).value);
+console.log(list.at(2).value);
+console.log(list.toString());
+
+
+module.exports = {LinkedList, LinkedListNode}
